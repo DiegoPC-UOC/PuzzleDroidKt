@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">PuzzleDroidKt</string>
+    <string name="bSelecImg">Seleccion imagenes</string>
+    <string name="bCamara">Cámara</string>
+    <string name="bMusica">Música</string>
+</resources>

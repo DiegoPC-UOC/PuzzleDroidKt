@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.example.puzzledroidkt.databinding.ViewPuzzleImageBinding
 
 class PuzzleImagesAdapter(
-    private val puzzleImages: List<PuzzleImage>,
+    var puzzleImages: List<PuzzleImage>,
     private val puzzleClickedListener: (PuzzleImage) -> Unit
 ) :
     RecyclerView.Adapter<PuzzleImagesAdapter.ViewHolder>() {

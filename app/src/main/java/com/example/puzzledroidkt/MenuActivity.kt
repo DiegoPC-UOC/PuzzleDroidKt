@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import com.example.puzzledroidkt.databinding.ActivityMainBinding
 import com.example.puzzledroidkt.databinding.ActivityMenuBinding
+import kotlin.concurrent.thread
 
 class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,26 +14,26 @@ class MenuActivity : AppCompatActivity() {
         val binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // TODO: Listar imagenes en la carpeta assets/img
-        val imgList = binding.root.context.assets.list("/img")
-        //for (img in imgList)
-        for (img in imgList!!){
-            PuzzleImage("file:///android_asset/img/")
-        }
-        binding.rvPuzzleImages.adapter = PuzzleImagesAdapter(
-            //TODO: Por cada imagen en la carpeta, crear un PuzzleImage con la ruta
-            listOf(
-                PuzzleImage("file:///android_asset/img/photo1.jpg"),
-                PuzzleImage("file:///android_asset/img/photo2.jpg"),
-                PuzzleImage("file:///android_asset/img/photo3.jpg"),
-                PuzzleImage("file:///android_asset/img/photo4.jpg"),
-                PuzzleImage("file:///android_asset/img/photo5.jpg")
-            )
-        ) {
-            //TODO: Intent hacia PuzzleActivity pasando la ruta a la imagen
-            Toast
+        val imgList: Array<String>? = binding.root.context.assets.list("img/")
+
+        val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
+        val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
+            Toast //TODO: Intent hacia PuzzleActivity pasando la ruta a la imagen
                 .makeText(this, "hola", Toast.LENGTH_SHORT)
                 .show()
         }
+        binding.rvPuzzleImages.adapter = puzzleImagesAdapter
+        thread {
+            if (imgList != null) {
+                for (img in imgList)
+                    imgs.add(PuzzleImage("file:///android_asset/img/$img"))
+            }
+            runOnUiThread{
+                puzzleImagesAdapter.puzzleImages = imgs
+                puzzleImagesAdapter.notifyDataSetChanged()
+            }
+        }
+
 
         //TODO: Binding ranking recycledview
 

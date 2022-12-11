@@ -1,5 +1,6 @@
 package com.example.puzzledroidkt
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,8 +20,11 @@ class MenuActivity : AppCompatActivity() {
         val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
         val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
             Toast //TODO: Intent hacia PuzzleActivity pasando la ruta a la imagen
-                .makeText(this, "hola", Toast.LENGTH_SHORT)
+                .makeText(this, puzzleImage.image, Toast.LENGTH_SHORT)
                 .show()
+            val intent = Intent(applicationContext, PuzzleActivity::class.java)
+            intent.putExtra("assetName", puzzleImage.image)
+            startActivity(intent)
         }
         binding.rvPuzzleImages.adapter = puzzleImagesAdapter
         thread {

@@ -20,7 +20,9 @@
             android:id="@+id/rvPuzzleImages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="8"
+            android:layout_gravity="center"
+            android:layout_weight="10"
+            android:foregroundGravity="center"
             android:padding="8dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
@@ -29,7 +31,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="7"
             android:gravity="bottom"
             android:padding="8dp">
 

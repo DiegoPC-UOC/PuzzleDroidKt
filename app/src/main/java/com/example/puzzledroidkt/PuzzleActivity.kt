@@ -3,13 +3,16 @@ package com.example.puzzledroidkt
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.example.puzzledroidkt.GestureDetectGridView.OnSwipeListener
 import kotlinx.android.synthetic.main.activity_puzzle.*
 import java.util.*
@@ -26,6 +29,8 @@ class PuzzleActivity : AppCompatActivity() {
 
             private var boardColumnWidth = 0
             private var boardColumnHeight = 0
+            
+            private var assetName :String = ""
         }
 
         private val tileListIndexes = mutableListOf<Int>()
@@ -48,6 +53,7 @@ class PuzzleActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_puzzle)
+            assetName = intent.getStringExtra("assetName")!!
 
             init()
             scrambleTileBoard()
@@ -116,7 +122,7 @@ class PuzzleActivity : AppCompatActivity() {
         private fun displayTileBoard() {
             val tileImages = mutableListOf<ImageView>()
             var tileImage: ImageView //TODO:  = splitImage(IMAGE_URL)
-            var pieces: ArrayList<Bitmap> = splitImage("file:///android_asset/img/photo1.jpg")
+            var pieces: ArrayList<Bitmap> = splitImage(assetName)
 
             tileListIndexes.forEach { i ->
                 tileImage = ImageView(this)
@@ -130,9 +136,23 @@ class PuzzleActivity : AppCompatActivity() {
             var pieces = ArrayList<Bitmap>(DIMENSIONS)
             var rows = TOTAL_COLUMNS
             var cols = TOTAL_COLUMNS
-            var image = Glide
-                .with(this).asBitmap()
-                .load(imgPath).submit().get()
+            var image :Bitmap
+            Glide.with(this)
+                .asBitmap()
+                .load(imgPath)
+                .into(object : CustomTarget<Bitmap>(){
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                    ) {
+                        image = resource
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
             var w = image.width
             var h = image.height
 

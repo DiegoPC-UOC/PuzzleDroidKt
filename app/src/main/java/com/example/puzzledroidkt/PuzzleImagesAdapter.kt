@@ -23,15 +23,7 @@ class PuzzleImagesAdapter(
 
         return ViewHolder(binding)
     }
-    /*Normal inflater
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.view_puzzle_image, parent, false)
 
-        return ViewHolder(view)
-    }
-    */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val puzzleImage = puzzleImages[position]
         holder.bind(puzzleImage)

@@ -16,7 +16,6 @@ class MenuActivity : AppCompatActivity() {
         setContentView(binding.root)
         // TODO: Listar imagenes en la carpeta assets/img
         val imgList: Array<String>? = binding.root.context.assets.list("img/")
-
         val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
         val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
             Toast //TODO: Intent hacia PuzzleActivity pasando la ruta a la imagen

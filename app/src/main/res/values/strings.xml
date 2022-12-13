@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">PuzzleDroidKt</string>
-    <string name="bSelecImg">Seleccion imagenes</string>
+    <string name="bSelecImg">Imagenes Aleatorias</string>
     <string name="bCamara">Cámara</string>
     <string name="bMusica">Música</string>
+    <string name="invalid_move">Movimiento invalido</string>
+    <string name="winner">Has Ganado!!!</string>
 </resources>

@@ -1,16 +1,16 @@
 package com.example.puzzledroidkt
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.drawToBitmap
 import com.bumptech.glide.Glide
 import com.example.puzzledroidkt.GestureDetectGridView.OnSwipeListener
+import com.example.puzzledroidkt.databinding.ActivityPuzzleBinding
 import kotlinx.android.synthetic.main.activity_puzzle.*
 import java.util.*
 
@@ -50,8 +50,10 @@ class PuzzleActivity : AppCompatActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_puzzle)
+            val binding = ActivityPuzzleBinding.inflate(layoutInflater)
+            setContentView(binding.root)
             assetName = intent.getStringExtra("assetName")!!
+
 
             init()
             scrambleTileBoard()
@@ -69,6 +71,7 @@ class PuzzleActivity : AppCompatActivity() {
             }
 
             tileListIndexes += 0 until DIMENSIONS
+
         }
 
         private fun scrambleTileBoard() {
@@ -103,50 +106,38 @@ class PuzzleActivity : AppCompatActivity() {
             })
         }
 
-        private fun getStatusBarHeight(context: Context): Int {
-            val resources = context.resources
-            var result = 0
-            val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-            if (resourceId > 0) {
-                result = resources.getDimensionPixelSize(resourceId)
-            }
-
-            return result
-        }
-
         /**
          * Used for both init and every time a new swap move is made by the user.
          */
         private fun displayTileBoard() {
             val tileImages = mutableListOf<ImageView>()
-            var tileImage: ImageView //TODO:  = splitImage(IMAGE_URL)
-            var pieces: ArrayList<Bitmap> = splitImage(assetName)
+            var tileImage: ImageView
+            val pieces: ArrayList<Bitmap> = splitImage(assetName)
 
             tileListIndexes.forEach { i ->
                 tileImage = ImageView(this)
-                tileImage.background = BitmapDrawable(pieces[i])
+                tileImage.setImageBitmap(pieces[i])
                 tileImages.add(tileImage)
             }
-
             gesture_detect_grid_view.adapter = TileImageAdapter(tileImages, boardColumnWidth, boardColumnHeight)
         }
         private fun splitImage(imgPath: String):ArrayList<Bitmap>{
-            var pieces = ArrayList<Bitmap>(DIMENSIONS)
-            var rows = TOTAL_COLUMNS
-            var cols = TOTAL_COLUMNS
+            val pieces = ArrayList<Bitmap>(DIMENSIONS)
+            val rows = TOTAL_COLUMNS
+            val cols = TOTAL_COLUMNS
+
             Glide
                 .with(this)
                 .load(imgPath)
-                //.placeholder()
                 .into(imageView)
-            imageView.setDrawingCacheEnabled(true)
-            var image : Bitmap = imageView.drawingCache
 
-            var w = image.width
-            var h = image.height
+            val image : Bitmap = imageView.drawToBitmap()
 
-            var pieceWidth = w/ rows
-            var pieceHeight = h/ cols
+            val w = image.width
+            val h = image.height
+
+            val pieceWidth = w/ rows
+            val pieceHeight = h/ cols
 
             var yCoord = 0
             for (row in 0 until  TOTAL_COLUMNS) {
@@ -244,6 +235,7 @@ class PuzzleActivity : AppCompatActivity() {
 
             if (isSolved) {
                 displayToast(R.string.winner)
+                finish()
             }
         }
     }

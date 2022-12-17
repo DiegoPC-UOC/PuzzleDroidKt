@@ -22,7 +22,7 @@ class MenuActivity : AppCompatActivity() {
                 .makeText(this, puzzleImage.image, Toast.LENGTH_SHORT)
                 .show()
             val intent = Intent(applicationContext, PuzzleActivity::class.java)
-            intent.putExtra("assetName", puzzleImage.image)
+            intent.putExtra("imgPath", puzzleImage.image)
             startActivity(intent)
         }
         binding.rvPuzzleImages.adapter = puzzleImagesAdapter

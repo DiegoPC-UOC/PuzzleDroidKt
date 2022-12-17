@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.example.puzzledroidkt.GestureDetectGridView.OnSwipeListener
 import com.example.puzzledroidkt.databinding.ActivityPuzzleBinding
 import kotlinx.android.synthetic.main.activity_puzzle.*
+import java.lang.System.currentTimeMillis
+import java.text.SimpleDateFormat
 import java.util.*
 
 enum class SwipeDirections {
@@ -27,13 +29,13 @@ class PuzzleActivity : AppCompatActivity() {
             private var boardColumnWidth = 0
             private var boardColumnHeight = 0
             
-            private var assetName :String = ""
+            private var imgPath :String = ""
 
         }
 
         private val tileListIndexes = mutableListOf<Int>()
-
-        private val isSolved: Boolean
+        private var initTime : Long = 0
+    private val isSolved: Boolean
             get() {
                 var solved = false
                 for (i in tileListIndexes.indices) {
@@ -52,12 +54,14 @@ class PuzzleActivity : AppCompatActivity() {
             super.onCreate(savedInstanceState)
             val binding = ActivityPuzzleBinding.inflate(layoutInflater)
             setContentView(binding.root)
-            assetName = intent.getStringExtra("assetName")!!
+            imgPath = intent.getStringExtra("imgPath")!!
 
 
             init()
             scrambleTileBoard()
             setTileBoardDimensions()
+            initTime = currentTimeMillis()
+
         }
 
         private fun init() {
@@ -112,7 +116,7 @@ class PuzzleActivity : AppCompatActivity() {
         private fun displayTileBoard() {
             val tileImages = mutableListOf<ImageView>()
             var tileImage: ImageView
-            val pieces: ArrayList<Bitmap> = splitImage(assetName)
+            val pieces: ArrayList<Bitmap> = splitImage(imgPath)
 
             tileListIndexes.forEach { i ->
                 tileImage = ImageView(this)
@@ -235,6 +239,8 @@ class PuzzleActivity : AppCompatActivity() {
 
             if (isSolved) {
                 displayToast(R.string.winner)
+                var finishTime = currentTimeMillis() - initTime
+
                 finish()
             }
         }

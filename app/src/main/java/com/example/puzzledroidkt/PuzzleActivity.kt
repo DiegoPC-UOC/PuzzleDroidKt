@@ -1,5 +1,6 @@
 package com.example.puzzledroidkt
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -56,13 +57,18 @@ class PuzzleActivity : AppCompatActivity() {
         binding = ActivityPuzzleBinding.inflate(layoutInflater)
         setContentView(binding.root)
         imgPath = intent.getStringExtra("imgPath")!!
-
-
+        if (!MyMusicService.isRuning) {
+            startService(Intent(this,MyMusicService::class.java))
+        }
         init()
         scrambleTileBoard()
         setTileBoardDimensions()
         initTime = currentTimeMillis()
 
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, MyMusicService::class.java))
     }
     private fun init() {
         binding.gestureDetectGridView.apply {

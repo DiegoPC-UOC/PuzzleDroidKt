@@ -14,12 +14,21 @@ class MainActivity : AppCompatActivity() {
         screenSplash.setKeepOnScreenCondition {true}
 
         //TODO: Confirmar permisos
-
+        if (!MyMusicService.isRuning) {
+            startService(Intent(this,MyMusicService::class.java))
+        }
         //TODO: Comprobar login - para la 3a parte
 
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)
         finish()
 
+    }
+
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, MyMusicService::class.java))
     }
 }

@@ -16,7 +16,7 @@ class MenuActivity : AppCompatActivity() {
         val imgList: Array<String>? = binding.root.context.assets.list("img/")
         val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
         val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
-            Toast //TODO: Intent hacia PuzzleActivity pasando la ruta a la imagen
+            Toast //Variable de Prueba para comprobar la informacion para la siguiente activity
                 .makeText(this, puzzleImage.image, Toast.LENGTH_SHORT)
                 .show()
             val intent = Intent(applicationContext, PuzzleActivity::class.java)

@@ -2,18 +2,18 @@ package com.example.puzzledroidkt
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.drawToBitmap
 import com.bumptech.glide.Glide
 import com.example.puzzledroidkt.GestureDetectGridView.OnSwipeListener
 import com.example.puzzledroidkt.databinding.ActivityPuzzleBinding
-import kotlinx.android.synthetic.main.activity_puzzle.*
 import java.lang.System.currentTimeMillis
-import java.text.SimpleDateFormat
 import java.util.*
 
 enum class SwipeDirections {
@@ -23,7 +23,7 @@ enum class SwipeDirections {
 class PuzzleActivity : AppCompatActivity() {
 
         companion object {
-            private const val TOTAL_COLUMNS = 3
+            private const val TOTAL_COLUMNS = 2
             private const val DIMENSIONS = TOTAL_COLUMNS * TOTAL_COLUMNS
 
             private var boardColumnWidth = 0
@@ -35,7 +35,11 @@ class PuzzleActivity : AppCompatActivity() {
 
         private val tileListIndexes = mutableListOf<Int>()
         private var initTime : Long = 0
-    private val isSolved: Boolean
+        private var finishTime : Long = 0
+        private lateinit var binding : ActivityPuzzleBinding
+
+
+        private val isSolved: Boolean
             get() {
                 var solved = false
                 for (i in tileListIndexes.indices) {
@@ -52,7 +56,7 @@ class PuzzleActivity : AppCompatActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            val binding = ActivityPuzzleBinding.inflate(layoutInflater)
+            binding = ActivityPuzzleBinding.inflate(layoutInflater)
             setContentView(binding.root)
             imgPath = intent.getStringExtra("imgPath")!!
 
@@ -65,11 +69,12 @@ class PuzzleActivity : AppCompatActivity() {
         }
 
         private fun init() {
-            gesture_detect_grid_view.apply {
+            binding.gestureDetectGridView.apply {
                 numColumns = TOTAL_COLUMNS
                 setOnSwipeListener(object : OnSwipeListener {
                     override fun onSwipe(direction: SwipeDirections, position: Int) {
                         moveTiles(direction, position)
+
                     }
                 })
             }
@@ -92,15 +97,13 @@ class PuzzleActivity : AppCompatActivity() {
         }
 
         private fun setTileBoardDimensions() {
-            val observer = gesture_detect_grid_view.viewTreeObserver
+            val observer = binding.gestureDetectGridView.viewTreeObserver
             observer.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    gesture_detect_grid_view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.gestureDetectGridView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    val displayWidth = gesture_detect_grid_view.measuredWidth
-                    val displayHeight = gesture_detect_grid_view.measuredHeight
-                    //val statusbarHeight = getStatusBarHeight(applicationContext)
-                    //val requiredHeight = displayHeight - statusbarHeight
+                    val displayWidth = binding.gestureDetectGridView.measuredWidth
+                    val displayHeight = binding.gestureDetectGridView.measuredHeight
 
                     boardColumnWidth = displayWidth / TOTAL_COLUMNS
                     boardColumnHeight = displayHeight / TOTAL_COLUMNS
@@ -123,7 +126,7 @@ class PuzzleActivity : AppCompatActivity() {
                 tileImage.setImageBitmap(pieces[i])
                 tileImages.add(tileImage)
             }
-            gesture_detect_grid_view.adapter = TileImageAdapter(tileImages, boardColumnWidth, boardColumnHeight)
+            binding.gestureDetectGridView.adapter = TileImageAdapter(tileImages, boardColumnWidth, boardColumnHeight)
         }
         private fun splitImage(imgPath: String):ArrayList<Bitmap>{
             val pieces = ArrayList<Bitmap>(DIMENSIONS)
@@ -133,9 +136,9 @@ class PuzzleActivity : AppCompatActivity() {
             Glide
                 .with(this)
                 .load(imgPath)
-                .into(imageView)
+                .into(binding.imageView)
 
-            val image : Bitmap = imageView.drawToBitmap()
+            val image : Bitmap = binding.imageView.drawToBitmap()
 
             val w = image.width
             val h = image.height
@@ -238,10 +241,29 @@ class PuzzleActivity : AppCompatActivity() {
             displayTileBoard()
 
             if (isSolved) {
-                displayToast(R.string.winner)
-                var finishTime = currentTimeMillis() - initTime
+                finishTime = currentTimeMillis() - initTime
+                onAlertDialog(binding.root)
 
-                finish()
+
             }
         }
+    private fun onAlertDialog(view: View) {
+        //Instantiate builder variable
+        val builder = AlertDialog.Builder(view.context)
+
+        // set title
+        builder.setTitle("Finalizado!!")
+
+        //set content area
+        builder.setMessage("Lo has conseguido.") //TODO: Mostrar los segundos (y minutos si es necesario)
+
+        //set negative button
+        builder.setPositiveButton(
+            "Volver") { dialog, id ->
+            // User clicked Update Now button
+            Toast.makeText(this, ((finishTime / 1000)  / 60).toString()+":"+((finishTime / 1000)  % 60).toString(),Toast.LENGTH_SHORT).show()
+            finish()
+        }
+        builder.show()
     }
+}

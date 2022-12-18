@@ -1,11 +1,9 @@
 package com.example.puzzledroidkt
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import com.example.puzzledroidkt.databinding.ActivityMainBinding
+import androidx.appcompat.app.AppCompatActivity
 import com.example.puzzledroidkt.databinding.ActivityMenuBinding
 import kotlin.concurrent.thread
 
@@ -14,11 +12,11 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // TODO: Listar imagenes en la carpeta assets/img
+
         val imgList: Array<String>? = binding.root.context.assets.list("img/")
         val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
         val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
-            Toast //TODO: Intent hacia PuzzleActivity pasando la ruta a la imagen
+            Toast //Variable de Prueba para comprobar la informacion para la siguiente activity
                 .makeText(this, puzzleImage.image, Toast.LENGTH_SHORT)
                 .show()
             val intent = Intent(applicationContext, PuzzleActivity::class.java)

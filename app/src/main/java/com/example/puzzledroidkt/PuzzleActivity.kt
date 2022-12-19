@@ -17,6 +17,7 @@ import com.example.puzzledroidkt.GestureDetectGridView.OnSwipeListener
 import com.example.puzzledroidkt.databinding.ActivityPuzzleBinding
 import java.lang.System.currentTimeMillis
 import java.util.*
+import kotlin.concurrent.thread
 
 enum class SwipeDirections {
     UP, DOWN, LEFT, RIGHT
@@ -57,14 +58,19 @@ class PuzzleActivity : AppCompatActivity() {
         binding = ActivityPuzzleBinding.inflate(layoutInflater)
         setContentView(binding.root)
         imgPath = intent.getStringExtra("imgPath")!!
-        if (!MyMusicService.isRuning) {
-            startService(Intent(this,MyMusicService::class.java))
-        }
+
         init()
         scrambleTileBoard()
         setTileBoardDimensions()
         initTime = currentTimeMillis()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!MyMusicService.isRuning) {
+            startService(Intent(this,MyMusicService::class.java))
+        }
     }
     override fun onDestroy() {
         super.onDestroy()

@@ -8,6 +8,7 @@ import android.os.IBinder
 class MyMusicService : Service() {
     private val iBinder:IBinder?=null
     private lateinit var mp: MediaPlayer
+    private var length = 0
     companion object {
         var isRuning = false
     }
@@ -17,16 +18,15 @@ class MyMusicService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        isRuning = true
+        mp=MediaPlayer.create(this,R.raw.no11)
+        mp.isLooping=true
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        mp=MediaPlayer.create(this,R.raw.no11)
-        mp.isLooping=true
         mp.start()
+        isRuning = true
         return START_STICKY
     }
-
     override fun onDestroy() {
         super.onDestroy()
         mp.stop()

@@ -13,7 +13,7 @@ class MenuActivity : AppCompatActivity() {
         val binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (!MyMusicService.isRuning) {
-            startService(Intent(this,MyMusicService::class.java))
+            startService(Intent(this, MyMusicService::class.java))
         }
         val imgList: Array<String>? = binding.root.context.assets.list("img/")
         val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
@@ -49,7 +49,12 @@ class MenuActivity : AppCompatActivity() {
         //TODO: Menu ActionBar
 
     }
-
+    override fun onResume() {
+        super.onResume()
+        if (!MyMusicService.isRuning) {
+            startService(Intent(this,MyMusicService::class.java))
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         stopService(Intent(this, MyMusicService::class.java))

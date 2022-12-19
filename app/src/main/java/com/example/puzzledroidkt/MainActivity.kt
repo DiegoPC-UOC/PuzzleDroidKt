@@ -1,9 +1,8 @@
 package com.example.puzzledroidkt
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : AppCompatActivity() {
@@ -11,12 +10,16 @@ class MainActivity : AppCompatActivity() {
         val screenSplash = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        screenSplash.setKeepOnScreenCondition {true}
-
-        //TODO: Confirmar permisos
-        if (!MyMusicService.isRuning) {
+        /**
+         * Mantiene activo splash screen
+         */
+         if (!MyMusicService.isRuning) {
             startService(Intent(this,MyMusicService::class.java))
-        }
+         }
+        //Si el servicio no esta activo
+        //Activa el servicio
+        //TODO: Confirmar permisos
+
         //TODO: Comprobar login - para la 3a parte
 
         val intent = Intent(this, MenuActivity::class.java)
@@ -24,9 +27,12 @@ class MainActivity : AppCompatActivity() {
         finish()
 
     }
-
-
-
+    override fun onResume() {
+        super.onResume()
+        if (!MyMusicService.isRuning) {
+            startService(Intent(this,MyMusicService::class.java))
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
         stopService(Intent(this, MyMusicService::class.java))

@@ -2,6 +2,8 @@ package com.example.puzzledroidkt
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.puzzledroidkt.databinding.ActivityMenuBinding
@@ -12,9 +14,7 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (!MyMusicService.isRuning) {
-            startService(Intent(this, MyMusicService::class.java))
-        }
+
         val imgList: Array<String>? = binding.root.context.assets.list("img/")
         val imgs: ArrayList<PuzzleImage> = ArrayList<PuzzleImage>()
         val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
@@ -43,20 +43,29 @@ class MenuActivity : AppCompatActivity() {
         //TODO: Boton camara
 
         //TODO: Boton imagen aleatoria
+        binding.bAleatorio.setOnClickListener(object : OnClickListener{
+            override fun onClick(v: View?) {
+                var intent = Intent()
+                intent.setType("image/*")
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.setAction(Intent.ACTION_GET_CONTENT)
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1)
+            }
+        })
 
         //TODO: Boton musica
 
         //TODO: Menu ActionBar
 
     }
+
     override fun onResume() {
         super.onResume()
-        if (!MyMusicService.isRuning) {
-            startService(Intent(this,MyMusicService::class.java))
-        }
+        startService(Intent(this, MyMusicService::class.java))
     }
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun onPause() {
+        super.onPause()
         stopService(Intent(this, MyMusicService::class.java))
     }
 }

@@ -27,14 +27,4 @@ class MainActivity : AppCompatActivity() {
         finish()
 
     }
-    override fun onResume() {
-        super.onResume()
-        if (!MyMusicService.isRuning) {
-            startService(Intent(this,MyMusicService::class.java))
-        }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(this, MyMusicService::class.java))
-    }
 }

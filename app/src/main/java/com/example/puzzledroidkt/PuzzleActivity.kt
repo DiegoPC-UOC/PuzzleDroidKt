@@ -68,12 +68,10 @@ class PuzzleActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!MyMusicService.isRuning) {
-            startService(Intent(this,MyMusicService::class.java))
-        }
+        startService(Intent(this, MyMusicService::class.java))
     }
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         stopService(Intent(this, MyMusicService::class.java))
     }
     private fun init() {
@@ -83,8 +81,10 @@ class PuzzleActivity : AppCompatActivity() {
                 override fun onSwipe(direction: SwipeDirections, position: Int) {
                     moveTiles(direction, position)
                     mp = MediaPlayer.create(binding.root.context,R.raw.arrow)
-                    mp.setOnPreparedListener{mp.start()}
-                    mp.setOnCompletionListener { mp.release() }
+                    thread {
+                        mp.setOnPreparedListener { mp.start() }
+                        mp.setOnCompletionListener { mp.release() }
+                    }
                 }
             })
         }

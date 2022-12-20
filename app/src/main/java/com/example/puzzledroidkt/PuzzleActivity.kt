@@ -12,28 +12,25 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.drawToBitmap
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.puzzledroidkt.GestureDetectGridView.OnSwipeListener
 import com.example.puzzledroidkt.databinding.ActivityPuzzleBinding
+import kotlinx.coroutines.launch
 import java.lang.System.currentTimeMillis
 import java.util.*
-import kotlin.concurrent.thread
 
 enum class SwipeDirections {
     UP, DOWN, LEFT, RIGHT
 }
 
 class PuzzleActivity : AppCompatActivity() {
-    companion object {
-        private const val TOTAL_COLUMNS = 2
-        private const val DIMENSIONS = TOTAL_COLUMNS * TOTAL_COLUMNS
 
-        private var boardColumnWidth = 0
-        private var boardColumnHeight = 0
-
-        private var imgPath :String = ""
-
-    }
+    private val columns = 4
+    private val dimensions = columns * columns
+    private var boardColumnWidth = 0
+    private var boardColumnHeight = 0
+    private var imgPath :String = ""
     private val tileListIndexes = mutableListOf<Int>()
     private var initTime : Long = 0
     private var finishTime : Long = 0
@@ -57,6 +54,8 @@ class PuzzleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPuzzleBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        var gridView = binding.gestureDetectGridView
+        var imageView = binding.imageView
         imgPath = intent.getStringExtra("imgPath")!!
 
         init()
@@ -76,21 +75,23 @@ class PuzzleActivity : AppCompatActivity() {
     }
     private fun init() {
         binding.gestureDetectGridView.apply {
-            numColumns = TOTAL_COLUMNS
+            numColumns = columns
             setOnSwipeListener(object : OnSwipeListener {
                 override fun onSwipe(direction: SwipeDirections, position: Int) {
-                    moveTiles(direction, position)
-                    mp = MediaPlayer.create(binding.root.context,R.raw.arrow)
-                    thread {
-                        mp.setOnPreparedListener { mp.start() }
-                        mp.setOnCompletionListener { mp.release() }
+                    lifecycleScope.launch{
+                        tileSound()
                     }
+                    moveTiles(direction, position)
                 }
             })
         }
-        tileListIndexes += 0 until DIMENSIONS
+        tileListIndexes += 0 until dimensions
     }
-
+    private fun tileSound(){
+        mp = MediaPlayer.create(binding.root.context,R.raw.arrow)
+        mp.setOnPreparedListener { mp.start() }
+        mp.setOnCompletionListener { mp.release() }
+    }
     private fun scrambleTileBoard() {
         var index: Int
         var tempIndex: Int
@@ -112,8 +113,8 @@ class PuzzleActivity : AppCompatActivity() {
                 val displayWidth = binding.gestureDetectGridView.measuredWidth
                 val displayHeight = binding.gestureDetectGridView.measuredHeight
 
-                boardColumnWidth = displayWidth / TOTAL_COLUMNS
-                boardColumnHeight = displayHeight / TOTAL_COLUMNS
+                boardColumnWidth = displayWidth / columns
+                boardColumnHeight = displayHeight / columns
 
                 displayTileBoard()
             }
@@ -134,10 +135,11 @@ class PuzzleActivity : AppCompatActivity() {
         }
         binding.gestureDetectGridView.adapter = TileImageAdapter(tileImages, boardColumnWidth, boardColumnHeight)
     }
+
     private fun splitImage(imgPath: String):ArrayList<Bitmap>{
-        val pieces = ArrayList<Bitmap>(DIMENSIONS)
-        val rows = TOTAL_COLUMNS
-        val cols = TOTAL_COLUMNS
+        val pieces = ArrayList<Bitmap>(dimensions)
+        val rows = columns
+        val cols = columns
 
         Glide
             .with(this)
@@ -153,9 +155,9 @@ class PuzzleActivity : AppCompatActivity() {
         val pieceHeight = h/ cols
 
         var yCoord = 0
-        for (row in 0 until  TOTAL_COLUMNS) {
+        for (row in 0 until  columns) {
             var xCoord = 0
-            for (col in 0 until  TOTAL_COLUMNS){
+            for (col in 0 until  columns){
                 pieces.add(Bitmap.createBitmap(image, xCoord, yCoord, pieceWidth, pieceHeight))
                 xCoord += pieceWidth
             }
@@ -166,47 +168,48 @@ class PuzzleActivity : AppCompatActivity() {
     private fun displayToast(@StringRes textResId: Int) {
         Toast.makeText(this, getString(textResId), Toast.LENGTH_SHORT).show()
     }
+
     private fun moveTiles(direction: SwipeDirections, position: Int) {
         // Upper-left-corner tile
         if (position == 0) {
             when (direction) {
                 SwipeDirections.RIGHT -> swapTile(position, 1)
-                SwipeDirections.DOWN -> swapTile(position, TOTAL_COLUMNS)
+                SwipeDirections.DOWN -> swapTile(position, columns)
                 else -> displayToast(R.string.invalid_move)
             }
             // Upper-center tiles
-        } else if (position > 0 && position < TOTAL_COLUMNS - 1) {
+        } else if (position > 0 && position < columns - 1) {
             when (direction) {
                 SwipeDirections.LEFT -> swapTile(position, -1)
-                SwipeDirections.DOWN -> swapTile(position, TOTAL_COLUMNS)
+                SwipeDirections.DOWN -> swapTile(position, columns)
                 SwipeDirections.RIGHT -> swapTile(position, 1)
                 else -> displayToast(R.string.invalid_move)
             }
             // Upper-right-corner tile
-        } else if (position == TOTAL_COLUMNS - 1) {
+        } else if (position == columns - 1) {
             when (direction) {
                 SwipeDirections.LEFT -> swapTile(position, -1)
-                SwipeDirections.DOWN -> swapTile(position, TOTAL_COLUMNS)
+                SwipeDirections.DOWN -> swapTile(position, columns)
                 else -> displayToast(R.string.invalid_move)
             }
             // Left-side tiles
-        } else if (position > TOTAL_COLUMNS - 1 && position < DIMENSIONS - TOTAL_COLUMNS && position % TOTAL_COLUMNS == 0) {
+        } else if (position > columns - 1 && position < dimensions - columns && position % columns == 0) {
             when (direction) {
-                SwipeDirections.UP -> swapTile(position, -TOTAL_COLUMNS)
+                SwipeDirections.UP -> swapTile(position, -columns)
                 SwipeDirections.RIGHT -> swapTile(position, 1)
-                SwipeDirections.DOWN -> swapTile(position, TOTAL_COLUMNS)
+                SwipeDirections.DOWN -> swapTile(position, columns)
                 else -> displayToast(R.string.invalid_move)
             }
             // Right-side AND bottom-right-corner tiles
-        } else if (position == TOTAL_COLUMNS * 2 - 1 || position == TOTAL_COLUMNS * 3 - 1) {
+        } else if (position == columns * 2 - 1 || position == columns * 3 - 1) {
             when (direction) {
-                SwipeDirections.UP -> swapTile(position, -TOTAL_COLUMNS)
+                SwipeDirections.UP -> swapTile(position, -columns)
                 SwipeDirections.LEFT -> swapTile(position, -1)
                 SwipeDirections.DOWN -> {
                     // Tolerates only the right-side tiles to swap downwards as opposed to the bottom-
                     // right-corner tile.
-                    if (position <= DIMENSIONS - TOTAL_COLUMNS - 1) {
-                        swapTile(position, TOTAL_COLUMNS)
+                    if (position <= dimensions - columns - 1) {
+                        swapTile(position, columns)
                     } else {
                         displayToast(R.string.invalid_move)
                     }
@@ -214,16 +217,16 @@ class PuzzleActivity : AppCompatActivity() {
                 else -> displayToast(R.string.invalid_move)
             }
             // Bottom-left corner tile
-        } else if (position == DIMENSIONS - TOTAL_COLUMNS) {
+        } else if (position == dimensions - columns) {
             when (direction) {
-                SwipeDirections.UP -> swapTile(position, -TOTAL_COLUMNS)
+                SwipeDirections.UP -> swapTile(position, -columns)
                 SwipeDirections.RIGHT -> swapTile(position, 1)
                 else -> displayToast(R.string.invalid_move)
             }
             // Bottom-center tiles
-        } else if (position < DIMENSIONS - 1 && position > DIMENSIONS - TOTAL_COLUMNS) {
+        } else if (position < dimensions - 1 && position > dimensions - columns) {
             when (direction) {
-                SwipeDirections.UP -> swapTile(position, -TOTAL_COLUMNS)
+                SwipeDirections.UP -> swapTile(position, -columns)
                 SwipeDirections.LEFT -> swapTile(position, -1)
                 SwipeDirections.RIGHT -> swapTile(position, 1)
                 else -> displayToast(R.string.invalid_move)
@@ -231,13 +234,17 @@ class PuzzleActivity : AppCompatActivity() {
             // Center tiles
         } else {
             when (direction) {
-                SwipeDirections.UP -> swapTile(position, -TOTAL_COLUMNS)
+                SwipeDirections.UP -> swapTile(position, -columns)
                 SwipeDirections.LEFT -> swapTile(position, -1)
                 SwipeDirections.RIGHT -> swapTile(position, 1)
-                else -> swapTile(position, TOTAL_COLUMNS)
+                else -> swapTile(position, columns)
             }
         }
     }
+
+    /**
+     * Intercambia la informacion de la posicion de las piezas
+     */
     private fun swapTile(currentPosition: Int, swap: Int) {
         val newPosition = tileListIndexes[currentPosition + swap]
         tileListIndexes[currentPosition + swap] = tileListIndexes[currentPosition]
@@ -247,25 +254,31 @@ class PuzzleActivity : AppCompatActivity() {
         if (isSolved) {
             finishTime = currentTimeMillis() - initTime
             onAlertDialog(binding.root)
-
-
         }
     }
+    /**
+     * Muestra un aiálogo indicando el tiempo tardado
+     */
     private fun onAlertDialog(view: View) {
         //Instantiate builder variable
         val builder = AlertDialog.Builder(view.context)
 
         // set title
         builder.setTitle("Finalizado!!")
-
+        var min = ((finishTime / 1000)  / 60).toString()
+        if (min.length<2)
+            min = "0$min"
+        var sec = ((finishTime / 1000)  % 60).toString()
+        if (sec.length<2)
+            sec = "0$sec"
         //set content area
-        builder.setMessage("Lo has conseguido.") //TODO: Mostrar los segundos (y minutos si es necesario)
+        builder.setMessage("Lo has conseguido.\nHas tardado: $min:$sec ")
 
         //set negative button
         builder.setPositiveButton(
-            "Volver") { dialog, id ->
+            "Volver") { _, _ ->
             // User clicked Update Now button
-            Toast.makeText(this, ((finishTime / 1000)  / 60).toString()+":"+((finishTime / 1000)  % 60).toString(),Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$finishTime",Toast.LENGTH_SHORT).show()
             finish()
         }
         builder.show()

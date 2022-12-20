@@ -34,7 +34,6 @@ class PuzzleImagesAdapter(
             Glide
                 .with(binding.root.context)
                 .load(puzzleImage.image)
-                .override(104,132)
                 .into(binding.image)
         }
     }

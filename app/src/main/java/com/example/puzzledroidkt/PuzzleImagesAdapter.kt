@@ -1,8 +1,6 @@
 package com.example.puzzledroidkt
 
 import android.view.LayoutInflater
-import android.view.OnReceiveContentListener
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -36,7 +34,6 @@ class PuzzleImagesAdapter(
             Glide
                 .with(binding.root.context)
                 .load(puzzleImage.image)
-                .override(104,132)
                 .into(binding.image)
         }
     }

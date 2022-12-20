@@ -4,12 +4,16 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.example.puzzledroidkt.databinding.ActivityMenuBinding
+import java.io.File
 import kotlin.concurrent.thread
 
 
@@ -18,6 +22,7 @@ class MenuActivity : AppCompatActivity() {
     private val cameraCode = 100
     private var selectedImgPathList :ArrayList<String> = ArrayList<String>()
     private lateinit var binding : ActivityMenuBinding
+    private lateinit var cameraImgPath : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMenuBinding.inflate(layoutInflater)
@@ -46,6 +51,7 @@ class MenuActivity : AppCompatActivity() {
         }
 
 
+
         //TODO: Binding ranking recycledview
 
         //TODO: Boton camara
@@ -65,10 +71,25 @@ class MenuActivity : AppCompatActivity() {
         //TODO: Menu ActionBar
 
     }
+    private fun createImageFile():File{
+        val fname = "img_${System.currentTimeMillis()}"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(fname, ".jpg",storageDir)
+        cameraImgPath = image.getAbsolutePath();
+        return image;
+    }
     private fun openCamara(){
-
-        var intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, cameraCode)
+        var pictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if(pictureIntent.resolveActivity(getPackageManager()) != null){
+            var photoFile : File = createImageFile()
+            if (photoFile!=null) {
+                var photoUri : Uri =
+                    FileProvider.getUriForFile(this,
+                        "com.example.puzzledroidkt.provider",photoFile)
+                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                startActivityForResult(pictureIntent, cameraCode)
+            }
+        }
     }
     private fun openGalleryForImages() {
 
@@ -102,6 +123,11 @@ class MenuActivity : AppCompatActivity() {
                 intent.putExtra("imgPath", img)
                 startActivity(intent)
             }
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == cameraCode){
+            val intent = Intent(applicationContext, PuzzleActivity::class.java)
+            intent.putExtra("imgPath", cameraImgPath)
+            startActivity(intent)
         }
 
     }

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-<!--    <uses-permission android:name="android.permission.READ_CALENDAR"/>-->
-<!--    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>-->
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <!--    <uses-permission android:name="android.permission.READ_CALENDAR"/>-->
+    <!--    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>-->
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,7 +21,7 @@
         <service
             android:name=".MyMusicService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".PuzzleActivity"
@@ -47,6 +51,16 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <provider
+            android:authorities="com.example.puzzledroidkt.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
     </application>
 
 </manifest>

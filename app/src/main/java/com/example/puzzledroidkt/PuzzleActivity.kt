@@ -20,13 +20,14 @@ import kotlinx.coroutines.launch
 import java.lang.System.currentTimeMillis
 import java.util.*
 
+
 enum class SwipeDirections {
     UP, DOWN, LEFT, RIGHT
 }
 
 class PuzzleActivity : AppCompatActivity() {
 
-    private val columns = 4
+    private val columns = 3
     private val dimensions = columns * columns
     private var boardColumnWidth = 0
     private var boardColumnHeight = 0
@@ -54,8 +55,6 @@ class PuzzleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPuzzleBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        var gridView = binding.gestureDetectGridView
-        var imageView = binding.imageView
         imgPath = intent.getStringExtra("imgPath")!!
 
         init()
@@ -135,7 +134,6 @@ class PuzzleActivity : AppCompatActivity() {
         }
         binding.gestureDetectGridView.adapter = TileImageAdapter(tileImages, boardColumnWidth, boardColumnHeight)
     }
-
     private fun splitImage(imgPath: String):ArrayList<Bitmap>{
         val pieces = ArrayList<Bitmap>(dimensions)
         val rows = columns
@@ -168,7 +166,6 @@ class PuzzleActivity : AppCompatActivity() {
     private fun displayToast(@StringRes textResId: Int) {
         Toast.makeText(this, getString(textResId), Toast.LENGTH_SHORT).show()
     }
-
     private fun moveTiles(direction: SwipeDirections, position: Int) {
         // Upper-left-corner tile
         if (position == 0) {
@@ -253,6 +250,7 @@ class PuzzleActivity : AppCompatActivity() {
 
         if (isSolved) {
             finishTime = currentTimeMillis() - initTime
+            //addToCalendar(finishTime)
             onAlertDialog(binding.root)
         }
     }
@@ -283,4 +281,22 @@ class PuzzleActivity : AppCompatActivity() {
         }
         builder.show()
     }
+//    private fun addToCalendar(finishTime:Long){
+//        val cr = contentResolver
+//        val values = ContentValues()
+//
+//        values.put(CalendarContract.Events.CALENDAR_ID, 3);
+//        values.put(CalendarContract.Events.TITLE, "Nueva Puntuacion")
+//        values.put(CalendarContract.Events.DESCRIPTION, finishTime.toString())
+//        values.put(CalendarContract.Events.DTSTART, currentTimeMillis())
+//        values.put(CalendarContract.Events.DTEND, currentTimeMillis())
+//        values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe/Madrid")
+//
+//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+//            return
+//        }
+//        var uri1 : Uri? = Uri.parse("content://com.android.calendar/events")
+//        var uri : Uri? = uri1?.let { binding.root.context.contentResolver.insert(it, values) }
+//        Log.e("RemindersTest", uri.toString());
+//    }
 }

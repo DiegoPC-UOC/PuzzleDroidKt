@@ -12,9 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.puzzledroidkt.databinding.ActivityMenuBinding
 import kotlin.concurrent.thread
 
+
 class MenuActivity : AppCompatActivity() {
-    val REQUEST_CODE = 200
-    var imgPathList :ArrayList<String> = ArrayList<String>()
+    private val galleryCode = 200
+    private val cameraCode = 100
+    private var selectedImgPathList :ArrayList<String> = ArrayList<String>()
+    private lateinit var binding : ActivityMenuBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMenuBinding.inflate(layoutInflater)
@@ -46,18 +49,26 @@ class MenuActivity : AppCompatActivity() {
         //TODO: Binding ranking recycledview
 
         //TODO: Boton camara
-
+        binding.bCamara.setOnClickListener(object : OnClickListener{
+            override fun onClick(v: View?) {
+                openCamara()
+            }
+        })
         //TODO: Boton imagen aleatoria
         binding.bAleatorio.setOnClickListener(object : OnClickListener{
             override fun onClick(v: View?) {
                 openGalleryForImages()
             }
         })
-
         //TODO: Boton musica
 
         //TODO: Menu ActionBar
 
+    }
+    private fun openCamara(){
+
+        var intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, cameraCode)
     }
     private fun openGalleryForImages() {
 
@@ -65,33 +76,34 @@ class MenuActivity : AppCompatActivity() {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "image/*"
-            startActivityForResult(intent, REQUEST_CODE)
+            startActivityForResult(intent, galleryCode)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == galleryCode){
 
             // if multiple images are selected
             if (data?.getClipData() != null) {
                 var count = data.clipData?.itemCount
-                imgPathList.clear()
+                selectedImgPathList.clear()
                 for (i in 0..count!! - 1) {
                     var imageUri: Uri = data.clipData?.getItemAt(i)!!.uri
-                    imgPathList.add(imageUri.toString())
+                    selectedImgPathList.add(imageUri.toString())
                 }
             } else if (data?.getData() != null) {
                 // if single image is selected
                 var imageUri: Uri = data.data!!
-                imgPathList.clear()
-                imgPathList.add(imageUri.toString())
+                selectedImgPathList.clear()
+                selectedImgPathList.add(imageUri.toString())
             }
-            for (img in imgPathList) {
+            for (img in selectedImgPathList) {
                 val intent = Intent(applicationContext, PuzzleActivity::class.java)
                 intent.putExtra("imgPath", img)
                 startActivity(intent)
             }
         }
+
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)

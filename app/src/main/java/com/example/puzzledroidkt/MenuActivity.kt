@@ -11,6 +11,7 @@ import com.example.puzzledroidkt.databinding.ActivityMenuBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlin.concurrent.thread
 
+
 class MenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

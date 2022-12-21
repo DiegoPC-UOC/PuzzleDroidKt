@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
          */
         screenSplash.setKeepOnScreenCondition {true}
 
-        //TODO: Comprobar login - para la 3a parte
         val sh = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE)
         if(!sh.getBoolean("isLogin",false)){
             val intent = Intent(this, SignInActivity::class.java)

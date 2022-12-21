@@ -280,7 +280,7 @@ class PuzzleActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(view.context)
 
         // set title
-        builder.setTitle("Finalizado!!")
+        builder.setTitle(R.string.dialog_title)
         var min = ((finishTime / 1000)  / 60).toString()
         if (min.length<2)
             min = "0$min"
@@ -288,11 +288,11 @@ class PuzzleActivity : AppCompatActivity() {
         if (sec.length<2)
             sec = "0$sec"
         //set content area
-        builder.setMessage("Lo has conseguido.\nHas tardado: $min:$sec ")
+        builder.setMessage("${getString(R.string.dialog_message1)}\n${getString(R.string.dialog_message2)} $min:$sec ")
 
         //set negative button
         builder.setPositiveButton(
-            "Volver") { _, _ ->
+            R.string.back) { _, _ ->
 //            if(finishTime<60000) {
 //                showNotification()
 //            }

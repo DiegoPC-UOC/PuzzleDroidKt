@@ -25,9 +25,9 @@ class MenuActivity : AppCompatActivity() {
         val imgs: ArrayList<PuzzleImage> = ArrayList()
         //Asigna a cada elemento del recyclerView el comportamieto
         val puzzleImagesAdapter = PuzzleImagesAdapter(emptyList()) { puzzleImage ->
-            Toast //Variable de Prueba para comprobar la informacion para la siguiente activity
-                .makeText(this, puzzleImage.image, Toast.LENGTH_SHORT)
-                .show()
+//            Toast //Variable de Prueba para comprobar la informacion para la siguiente activity
+//                .makeText(this, puzzleImage.image, Toast.LENGTH_SHORT)
+//                .show()
             //Cambio a la actividad del puzzle pasando la direccion de la imagen a usar
             val intent = Intent(applicationContext, PuzzleActivity::class.java)
             intent.putExtra("imgPath", puzzleImage.image)

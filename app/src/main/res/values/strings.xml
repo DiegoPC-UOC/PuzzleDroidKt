@@ -5,4 +5,8 @@
     <string name="logout">Desconectar</string>
     <string name="stringbgoogle">Iniciar sesión con Google</string>
     <string name="prefs_file">com.example.puzzledroidtk.PREFERENCE_FILE_KEY</string>
+    <string name="dialog_title">Finalizado!!</string>
+    <string name="dialog_message1">Lo has conseguido.</string>
+    <string name="dialog_message2">Has tardado:</string>
+    <string name="back">Volver</string>
 </resources>

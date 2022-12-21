@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PuzzleDroidKt</string>
+    <string name="invalid_move">Movimento non valido</string>
+    <string name="winner">Avete vinto!!!</string>
+    <string name="logout">Scollegamento</string>
+    <string name="stringbgoogle">Accedi con Google</string>
+    <string name="prefs_file">com.example.puzzledroidtk.PREFERENCE_FILE_KEY</string>
+    <string name="dialog_title">Completato!!</string>
+    <string name="dialog_message1">Siete riusciti.</string>
+    <string name="dialog_message2">Lo hai fatto in:</string>
+    <string name="back">Indietro</string>
+</resources>

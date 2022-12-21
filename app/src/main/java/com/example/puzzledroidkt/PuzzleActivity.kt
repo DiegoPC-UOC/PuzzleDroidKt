@@ -48,30 +48,42 @@ class PuzzleActivity : AppCompatActivity() {
                     break
                 }
             }
-
             return solved
         }
+    /**
+     * Comportamiento del programa onCreate
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPuzzleBinding.inflate(layoutInflater)
         setContentView(binding.root)
         imgPath = intent.getStringExtra("imgPath")!!
-
         init()
         scrambleTileBoard()
         setTileBoardDimensions()
         initTime = currentTimeMillis()
 
     }
-
+    /**
+     * Comportamiento del programa onResume
+     */
     override fun onResume() {
         super.onResume()
-        startService(Intent(this, MyMusicService::class.java))
+        if (MyMusicService.isRuning)
+            startService(Intent(this, MyMusicService::class.java))
     }
+    /**
+     * Comportamiento del programa onPause
+     */
     override fun onPause() {
         super.onPause()
-        stopService(Intent(this, MyMusicService::class.java))
+        if (MyMusicService.isRuning)
+            stopService(Intent(this, MyMusicService::class.java))
     }
+
+    /**
+     * Asigna las piezas al layout
+     */
     private fun init() {
         binding.gestureDetectGridView.apply {
             numColumns = columns
@@ -86,11 +98,17 @@ class PuzzleActivity : AppCompatActivity() {
         }
         tileListIndexes += 0 until dimensions
     }
+    /**
+     * Reproduce el sonido del movimiento de las piezas
+     */
     private fun tileSound(){
         mp = MediaPlayer.create(binding.root.context,R.raw.arrow)
         mp.setOnPreparedListener { mp.start() }
         mp.setOnCompletionListener { mp.release() }
     }
+    /**
+     * Mezcla las piezas del puzle para el layout
+     */
     private fun scrambleTileBoard() {
         var index: Int
         var tempIndex: Int
@@ -103,6 +121,9 @@ class PuzzleActivity : AppCompatActivity() {
             tileListIndexes[i] = tempIndex
         }
     }
+    /**
+     * Determina la dimension del tablero
+     */
     private fun setTileBoardDimensions() {
         val observer = binding.gestureDetectGridView.viewTreeObserver
         observer.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
@@ -120,7 +141,7 @@ class PuzzleActivity : AppCompatActivity() {
         })
     }
     /**
-     * Used for both init and every time a new swap move is made by the user.
+     * Muestra por las piezas en el layout
      */
     private fun displayTileBoard() {
         val tileImages = mutableListOf<ImageView>()
@@ -134,6 +155,11 @@ class PuzzleActivity : AppCompatActivity() {
         }
         binding.gestureDetectGridView.adapter = TileImageAdapter(tileImages, boardColumnWidth, boardColumnHeight)
     }
+    /**
+     * Divide la imagen varias partes
+     * Recibe la direccion de la imagen a dividir
+     * Devuelve un ArrayList con los diferentes Bitmap de la imagen
+     */
     private fun splitImage(imgPath: String):ArrayList<Bitmap>{
         val pieces = ArrayList<Bitmap>(dimensions)
         val rows = columns
@@ -163,9 +189,17 @@ class PuzzleActivity : AppCompatActivity() {
         }
         return pieces
     }
+    /**
+     * Muestra un Toast por pantalla
+     * Recibe el texto a mostrar
+     */
     private fun displayToast(@StringRes textResId: Int) {
         Toast.makeText(this, getString(textResId), Toast.LENGTH_SHORT).show()
     }
+    /**
+     * Comprueba el movimiento de las piezas y llama a la funcion de cambio de posiciion
+     * Recibe las direcciones predefinidas y la posicion de la pieza a mover
+     */
     private fun moveTiles(direction: SwipeDirections, position: Int) {
         // Upper-left-corner tile
         if (position == 0) {
@@ -241,6 +275,7 @@ class PuzzleActivity : AppCompatActivity() {
 
     /**
      * Intercambia la informacion de la posicion de las piezas
+     * Recibe la posicion actual de la pieza y la posicion a cambiar
      */
     private fun swapTile(currentPosition: Int, swap: Int) {
         val newPosition = tileListIndexes[currentPosition + swap]
@@ -256,6 +291,7 @@ class PuzzleActivity : AppCompatActivity() {
     }
     /**
      * Muestra un aiálogo indicando el tiempo tardado
+     * Recibe una vista para usar su contexto
      */
     private fun onAlertDialog(view: View) {
         //Instantiate builder variable
@@ -275,12 +311,34 @@ class PuzzleActivity : AppCompatActivity() {
         //set negative button
         builder.setPositiveButton(
             "Volver") { _, _ ->
+//            if(finishTime<60000) {
+//                showNotification()
+//            }
             // User clicked Update Now button
-            Toast.makeText(this, "$finishTime",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "$finishTime",Toast.LENGTH_SHORT).show()
             finish()
         }
         builder.show()
     }
+//    fun showNotification() {
+//        val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            val channel = NotificationChannel("YOUR_CHANNEL_ID",
+//                "YOUR_CHANNEL_NAME",
+//                NotificationManager.IMPORTANCE_DEFAULT)
+//            channel.description = "YOUR_NOTIFICATION_CHANNEL_DESCRIPTION"
+//            mNotificationManager.createNotificationChannel(channel)
+//        }
+//        val mBuilder = NotificationCompat.Builder(applicationContext, "YOUR_CHANNEL_ID")
+//            .setSmallIcon(R.mipmap.ic_launcher) // notification icon
+//            .setContentTitle("Wow, que rápido") // title for notification
+//            .setContentText("Has tardado menos de 1 minuto!!!")// message for notification
+//            .setAutoCancel(true) // clear notification after click
+//        val intent = Intent(applicationContext, PuzzleActivity::class.java)
+//        val pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+//        mBuilder.setContentIntent(pi)
+//        mNotificationManager.notify(0, mBuilder.build())
+//    }
 //    private fun addToCalendar(finishTime:Long){
 //        val cr = contentResolver
 //        val values = ContentValues()

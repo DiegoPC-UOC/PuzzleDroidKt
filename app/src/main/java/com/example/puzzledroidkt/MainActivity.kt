@@ -13,9 +13,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * Mantiene activo splash screen
          */
-         if (!MyMusicService.isRuning) {
-            startService(Intent(this,MyMusicService::class.java))
-         }
+        screenSplash.setKeepOnScreenCondition {true}
         //Si el servicio no esta activo
         //Activa el servicio
         //TODO: Confirmar permisos

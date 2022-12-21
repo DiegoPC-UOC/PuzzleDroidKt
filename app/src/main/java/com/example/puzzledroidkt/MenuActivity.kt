@@ -1,10 +1,14 @@
 package com.example.puzzledroidkt
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.puzzledroidkt.databinding.ActivityMenuBinding
+import com.google.firebase.auth.FirebaseAuth
 import kotlin.concurrent.thread
 
 class MenuActivity : AppCompatActivity() {
@@ -47,4 +51,25 @@ class MenuActivity : AppCompatActivity() {
         //TODO: Binding ranking recycledview
 
         }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.logout -> {
+                val prefs = getSharedPreferences(getString(R.string.prefs_file),Context.MODE_PRIVATE).edit()
+                prefs.clear()
+                prefs.apply()
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
 }

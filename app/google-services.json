@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "900722210984",
+    "project_id": "puzzledroidtk",
+    "storage_bucket": "puzzledroidtk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900722210984:android:fa0b10a915ba774a1cea9d",
+        "android_client_info": {
+          "package_name": "com.example.puzzledroidkt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900722210984-693tqjirgbpso4ulk7obkkt3gebp13o1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.puzzledroidkt",
+            "certificate_hash": "fdf87d7f4727f9da186a98f1cb987b3106c8ba34"
+          }
+        },
+        {
+          "client_id": "900722210984-u1cimruae6chqoekofms1p1l7hvrmdhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxfbtbNzpKsnkqqEICw6wRSsw5SdI8p5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900722210984-u1cimruae6chqoekofms1p1l7hvrmdhc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

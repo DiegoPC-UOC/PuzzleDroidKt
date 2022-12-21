@@ -8,9 +8,8 @@ import android.os.IBinder
 class MyMusicService : Service() {
     private val iBinder:IBinder?=null
     private lateinit var mp: MediaPlayer
-    private var length = 0
     companion object {
-        var isRuning = false
+        var isRuning = true
     }
     override fun onBind(intent: Intent): IBinder? {
         return iBinder
@@ -24,14 +23,12 @@ class MyMusicService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         mp.start()
-        isRuning = true
         return START_STICKY
     }
     override fun onDestroy() {
         super.onDestroy()
         mp.stop()
         mp.release()
-        isRuning = false
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

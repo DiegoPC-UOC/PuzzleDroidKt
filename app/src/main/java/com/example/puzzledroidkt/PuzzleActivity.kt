@@ -1,6 +1,5 @@
 package com.example.puzzledroidkt
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -64,23 +63,6 @@ class PuzzleActivity : AppCompatActivity() {
         initTime = currentTimeMillis()
 
     }
-    /**
-     * Comportamiento del programa onResume
-     */
-    override fun onResume() {
-        super.onResume()
-        if (MyMusicService.isRuning)
-            startService(Intent(this, MyMusicService::class.java))
-    }
-    /**
-     * Comportamiento del programa onPause
-     */
-    override fun onPause() {
-        super.onPause()
-        if (MyMusicService.isRuning)
-            stopService(Intent(this, MyMusicService::class.java))
-    }
-
     /**
      * Asigna las piezas al layout
      */
@@ -320,41 +302,5 @@ class PuzzleActivity : AppCompatActivity() {
         }
         builder.show()
     }
-//    fun showNotification() {
-//        val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            val channel = NotificationChannel("YOUR_CHANNEL_ID",
-//                "YOUR_CHANNEL_NAME",
-//                NotificationManager.IMPORTANCE_DEFAULT)
-//            channel.description = "YOUR_NOTIFICATION_CHANNEL_DESCRIPTION"
-//            mNotificationManager.createNotificationChannel(channel)
-//        }
-//        val mBuilder = NotificationCompat.Builder(applicationContext, "YOUR_CHANNEL_ID")
-//            .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-//            .setContentTitle("Wow, que rápido") // title for notification
-//            .setContentText("Has tardado menos de 1 minuto!!!")// message for notification
-//            .setAutoCancel(true) // clear notification after click
-//        val intent = Intent(applicationContext, PuzzleActivity::class.java)
-//        val pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//        mBuilder.setContentIntent(pi)
-//        mNotificationManager.notify(0, mBuilder.build())
-//    }
-//    private fun addToCalendar(finishTime:Long){
-//        val cr = contentResolver
-//        val values = ContentValues()
-//
-//        values.put(CalendarContract.Events.CALENDAR_ID, 3);
-//        values.put(CalendarContract.Events.TITLE, "Nueva Puntuacion")
-//        values.put(CalendarContract.Events.DESCRIPTION, finishTime.toString())
-//        values.put(CalendarContract.Events.DTSTART, currentTimeMillis())
-//        values.put(CalendarContract.Events.DTEND, currentTimeMillis())
-//        values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe/Madrid")
-//
-//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-//            return
-//        }
-//        var uri1 : Uri? = Uri.parse("content://com.android.calendar/events")
-//        var uri : Uri? = uri1?.let { binding.root.context.contentResolver.insert(it, values) }
-//        Log.e("RemindersTest", uri.toString());
-//    }
+
 }

@@ -29,45 +29,17 @@
             tools:ignore="SpeakableTextPresentCheck"
             tools:listitem="@layout/view_puzzle_image" />
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="2"-->
-<!--            android:gravity="bottom"-->
-<!--            android:padding="8dp">-->
-
-
-<!--        </androidx.recyclerview.widget.RecyclerView>-->
-
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRanking"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp">
+            android:gravity="bottom"
+            android:padding="8dp">
 
-            <Button
-                android:id="@+id/bAleatorio"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bSelecImg" />
+        </androidx.recyclerview.widget.RecyclerView>
 
-            <Button
-                android:id="@+id/bCamara"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bCamara" />
 
-<!--            <Button-->
-<!--                android:id="@+id/bMusica"-->
-<!--                style="?android:attr/buttonBarButtonStyle"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/bMusica" />-->
-        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
